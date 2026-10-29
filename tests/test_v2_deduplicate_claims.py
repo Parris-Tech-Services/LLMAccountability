@@ -29,6 +29,18 @@ class DedupClaimsTests(unittest.TestCase):
         self.assertEqual(a, b)
         self.assertNotEqual(a[0]["id"], c[0]["id"])
 
+    def test_known_existing_ids_are_preserved(self):
+        # Locked values computed from original pre-fix extractor, not from the
+        # current function. A precedence/hash change must fail this regression.
+        overlapping = ClaimExtractor.extract(
+            "The automated tests passed", report_id="observed")
+        self.assertEqual(overlapping[0]["raw_text"], "tests pass")
+        self.assertEqual(overlapping[0]["id"], "a9f969170f2959d8")
+
+        unaffected = ClaimExtractor.extract("pushed to main", report_id="R")
+        self.assertEqual(unaffected[0]["raw_text"], "pushed to")
+        self.assertEqual(unaffected[0]["id"], "b520214b44587c0d")
+
     def test_no_checkable_claim_does_not_fabricate_one(self):
         self.assertEqual(ClaimExtractor.extract("Reviewed project goals.", report_id="R"), [])
 
