@@ -15,20 +15,19 @@ class ClaimExtractor:
     def extract(text: str, report_id: str = "default_report") -> List[Dict[str, Any]]:
         claims = []
         for claim_type, patterns in CLAIM_PATTERNS.items():
-            for p in patterns:
-                matches = re.finditer(p, text)
-                for index, match in enumerate(matches):
-                    raw_text = match.group(0)
-                    
-                    # Generate deterministic, stable ID
-                    hasher = hashlib.sha256()
-                    hasher.update(f"{report_id}:{claim_type}:{raw_text}:{index}".encode('utf-8'))
-                    claim_id = hasher.hexdigest()[:16]
-                    
-                    claims.append({
-                        "id": claim_id,
-                        "type": claim_type,
-                        "raw_text": raw_text
-                    })
-                    break # Usually we just take one claim per category per document, but we'll break inner loop to avoid redundant claims for the exact same pattern
+            # One semantic claim per type and report. Regexes overlap: for
+            # example, "automated tests passed" matches several test patterns.
+            # Only breaking the inner matches loop creates duplicate IDs and
+            # inflates claimed success rates.
+            match = next(
+                (found for pattern in patterns
+                 if (found := re.search(pattern, text)) is not None),
+                None,
+            )
+            if match is None:
+                continue
+            raw_text = match.group(0)
+            canonical = f"{report_id}:{claim_type}:{raw_text}:0"
+            claim_id = hashlib.sha256(canonical.encode("utf-8")).hexdigest()[:16]
+            claims.append({"id": claim_id, "type": claim_type, "raw_text": raw_text})
         return claims
