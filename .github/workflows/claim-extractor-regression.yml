@@ -1,0 +1,29 @@
+name: V2 deterministic claim extraction regression
+on:
+  push:
+    paths:
+      - 'v2/parsers/claim_extractor.py'
+      - 'tests/test_v2_deduplicate_claims.py'
+      - '.github/workflows/claim-extractor-regression.yml'
+  pull_request:
+    paths:
+      - 'v2/parsers/claim_extractor.py'
+      - 'tests/test_v2_deduplicate_claims.py'
+      - '.github/workflows/claim-extractor-regression.yml'
+permissions:
+  contents: read
+jobs:
+  regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run six pure claim-extractor tests
+        run: python -m unittest discover -s tests -p test_v2_deduplicate_claims.py -v
+      - name: Compile changed Python sources
+        run: python -m compileall -q v2/parsers/claim_extractor.py tests/test_v2_deduplicate_claims.py
