@@ -1,6 +1,7 @@
 name: V2 deterministic claim extraction regression
 on:
   push:
+    branches: [main]
     paths:
       - 'v2/parsers/claim_extractor.py'
       - 'v2/policy/engine.py'
