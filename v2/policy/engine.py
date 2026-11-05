@@ -10,6 +10,12 @@ class PolicyEngine:
             "inconclusive_claims": [],
             "final_verdict": Verdict.PASS
         }
+        # Unsupported wording or an empty report is absence of verification,
+        # not an empty set of successful checks.
+        if not claims:
+            report["final_verdict"] = Verdict.INCONCLUSIVE
+            report["reason"] = "No supported checkable claims were extracted."
+            return report
         
         # Pass 1: Global state and basic mapping
         has_inconclusive = False

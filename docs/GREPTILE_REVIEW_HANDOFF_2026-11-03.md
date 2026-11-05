@@ -22,3 +22,13 @@
   - **Closure:** Link tested commit, test run, review addressed state and any protected Windows acceptance. No deployment or release is claimed here.
 
 **Review status:** TASKS_COMMITTED; no outstanding Greptile inline comments identified for this reviewed PR, but independent tests and full-system proof remain open.
+
+## 6 November 2026 — L07 completion wording and empty-audit repair
+
+Owner: ChatGPT Work independent audit agent, branch `fix/reject-empty-audits`, based on `d5ebff7889f83ccdd25306c21add9f0a854e5c8c`. Narrow follow-up to existing L07 parser/policy acceptance; no competing protected-runtime installation work.
+
+Actual baseline: `VERIFIED COMPLETE` extracted no claims and `PolicyEngine.evaluate([], {})` returned PASS. Unsupported `Everything is done; deployed successfully` also returned PASS without executing a verification recipe. Repair maps exact VERIFIED COMPLETE wording to the existing fully-complete family, and empty/unsupported reports now produce INCONCLUSIVE. Existing locked claim IDs remain unchanged. This does not add semantic verification recipes or claim arbitrary phrasing is recognised.
+
+Executed: `python -m unittest discover -s tests -p test_v2_deduplicate_claims.py -v` — 10 passed; includes empty/unsupported report negatives, VERIFIED COMPLETE without evidence rejection, and supported claim positive. Existing parser CI now watches policy source too and runs these dependency-free checks; no paid repair or additional scheduled workflow enabled. Local broader adversarial/parser/recipe run: 48 passed, 2 Windows PowerShell tests deselected, 3 subtests passed. Initial missing-dependency/installer-file failures were investigated and resolved in the local source snapshot; the remaining Windows tests cannot run on this Linux host. Tests use synthetic notary keys under temporary workspace paths; no actual protected Windows runtime was installed or certified.
+
+Status: PARTIALLY COMPLETE pending independent review, remote exact-head tests and merge. L01/L02 protected notary/runtime acceptance and LLMA-GR-001 remain open; a pure policy test is not a signed live-system attestation.

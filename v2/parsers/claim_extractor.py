@@ -7,7 +7,7 @@ CLAIM_PATTERNS = {
     "pushed": [r"(?i)pushed (?:to|v\\d+)", r"(?i)push to main", r"(?i)pushed (.*) to github"],
     "no-secrets": [r"(?i)no secrets were committed"],
     "security-reviewed": [r"(?i)secure", r"(?i)authentication is secure"],
-    "fully-complete": [r"(?i)fully complete", r"(?i)production ready", r"(?i)every requirement is implemented"]
+    "fully-complete": [r"(?i)fully complete", r"(?i)production ready", r"(?i)every requirement is implemented", r"(?i)\bverified complete\b"]
 }
 
 class ClaimExtractor:
